@@ -5,6 +5,10 @@ h1, h6 {
     
 }
 
+body {
+    font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono", "lucida console";
+}
+
 #headbox {
     background-color:#81452D;
     margin-top: 10px;
@@ -12,4 +16,28 @@ h1, h6 {
     border-radius: 5px;
 }
 
-/* table border color is #357AB6 */
+.bluebox {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #357AB6;
+    border-radius: 5px;
+}
+
+#sched-title {
+    background-color: #357AB6;
+    color: white;
+    width: 100%;
+}
+
+form {
+    padding: 0 20px 0 20px;
+}
+
+button {
+    background-color: #357AB6;
+    color: white;
+}
+
+label {
+    font-weight: bolder;
+}

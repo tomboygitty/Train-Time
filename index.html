@@ -16,11 +16,64 @@
 <body>
   <header class="row">
     <div class="col-2"></div>
-    <div class="col-8" id="headbox">
+    <div id="headbox" class="col-8">
       <h1>Come On, Ride the Train</h1>
       <h6>Hey, Ride It</h6>
     </div>
-  </header>
+  </header><br><br>
+  
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-8 bluebox">
+        <p id="sched-title">Current Train Schedule</p>
+      <table class="table table-sm">
+          <thead>
+              <tr>
+                  <th>Train Name</th>
+                  <th>Destination</th>
+                  <th>Frequency (min)</th>
+                  <th>Next Arrival</th>
+                  <th>Minutes Away</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td>Charley Choo Choo</td>
+                  <td>Edinburgh</td>
+                  <td>50</td>
+                  <td>3:30 PM</td>
+                  <td>4</td>
+              </tr>
+          </tbody>
+        </table>
+    </div>
+  </div><br>
+
+  <div class="row">
+      <div class="col-2"></div>
+      <div class="col-8 bluebox">
+          <p id="sched-title">Add Train</p>
+          <form role="form">
+              <div class="form-group row">
+                <label for="name-input">Train Name</label>
+                <input class="form-control" id="name-input" type="text" required>
+              </div>
+              <div class="form-group row">
+                <label for="email-input">Destination</label>
+                <input class="form-control" id="dest-input" type="text" required>
+              </div>
+              <div class="form-group row">
+                <label for="age-input">First Train Time (HH:mm - military time)</label>
+                <input class="form-control" id="time-input" type="text" required>
+              </div>
+              <div class="form-group row">
+                <label for="comment-input">Frequency (min)</label>
+                <input class="form-control" id="freq-input" type="text" required>
+              </div>
+              <button class="btn btn-default" id="add-train" type="submit">Submit</button>
+            </form>
+      </div>
+  </div>
 
 
   <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
