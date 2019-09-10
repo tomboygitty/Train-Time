@@ -1,0 +1,15 @@
+h1, h6 {
+    font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono", "lucida console";
+    text-align: center;
+    color: white;
+    
+}
+
+#headbox {
+    background-color:#81452D;
+    margin-top: 10px;
+    padding: 30px 0 30px 0;
+    border-radius: 5px;
+}
+
+/* table border color is #357AB6 */
