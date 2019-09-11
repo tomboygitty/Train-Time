@@ -17,6 +17,7 @@ var first = "";
 var freq = "";
 var next = "";
 var mins = 0;
+var trains = [];
 
 $("#add-train").on("click", function() {
     event.preventDefault();
@@ -26,30 +27,37 @@ $("#add-train").on("click", function() {
     first = $("#time-input").val().trim();
     freq = $("#freq-input").val().trim();
     
+    // Calculate minutes to next arrival
     mins = calcMins(first, freq);
 
-    // Next Train
+    // Calculate next train arrival time
     next = moment(moment().add(mins, "minutes")).format("HH:mm A");
-    //console.log("ARRIVAL TIME: " + next);
     
-
-    if ((name!="")&&(dest!="")&&(first!="")&&(freq!="")&&(moment(first, 'HH:mm', true).isValid())) {
-        database.ref().push({
-            name: name,
-            destination: dest,
-            firstTime: first,
-            frequency: freq,
-            nextArrival: next,
-            minsAway: mins,
-            dateAdded: firebase.database.ServerValue.TIMESTAMP
-        });
+    // Check if this train name has already been used
+    if (checkName(name)) {
+        // Validate all input fields
+        if ((name!="")&&(dest!="")&&(first!="")&&(freq!="")&&(moment(first, 'HH:mm', true).isValid())) {
+            database.ref().push({
+                name: name,
+                destination: dest,
+                firstTime: first,
+                frequency: freq,
+                nextArrival: next,
+                minsAway: mins,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+        else {
+            alert("Please make sure all inputs are complete and formatted correctly.");
+        }
     }
-    else{
-        alert("Please make sure all inputs are complete and formatted correctly.");
+    else {
+        alert("This name is already in use. Please use another.");
     }
 
 });
 
+// Every time an entry is added to the database, update the data table to display it
 database.ref().on("child_added", function(snapshot) {
     var sv = snapshot.val();
 
@@ -61,8 +69,6 @@ database.ref().on("child_added", function(snapshot) {
     tableNext.attr("id", "next" + sv.name);
     var tableMins = $("<td>");
     tableMins.attr("id", "mins" + sv.name);
-    console.log(tableNext.attr("id") + ", " + tableMins.attr("id"));
-    
     
     tableName.text(sv.name);
     tableDest.text(sv.destination);
@@ -82,6 +88,17 @@ database.ref().on("child_added", function(snapshot) {
     console.log("Errors handled: " + errorObject.code);
 });
 
+// Function to check if a train name is already stored in the database
+function checkName(str) {
+    for (var i=0; i < trains.length; i++) {
+        if (trains[i]===str) {
+            return false;
+        }
+    }
+    return true;
+};
+
+// Function that takes start time and frequency and returns number of minutes from current moment to next arrival
 function calcMins(start, freq) {
     // First Time (pushed back 1 year to make sure it comes before current time)
     var firstTimeConverted = moment(start, "HH:mm").subtract(1, "years");
@@ -94,29 +111,28 @@ function calcMins(start, freq) {
 
     // Minutes Until Train
     return mins = freq - tRemainder;
-}
+};
 
-function updateTimes() {
+// Function to update the next arrival and minutes remaining for all trains in the database and initialize train names array
+// (Called whenever page loads)
+function initialize() {
     var query = firebase.database().ref().orderByKey();
     query.once("value")
     .then(function(snapshot) {
         snapshot.forEach(function(childSnapshot) {
-        // childData will be the actual contents of the child
-        var childData = childSnapshot.val();
-        var childFirst = childData.firstTime;
-        var childFreq = childData.frequency;
-        var childMins = calcMins(childFirst, childFreq);
-        var childNext = moment(moment().add(childMins, "minutes")).format("HH:mm A");
-        var nextID = "#next" + childData.name;
-        var minsID = "#mins" + childData.name;
-        $(nextID).text(childNext);
-        $(minsID).text(childMins);
-        console.log(childFirst);
-        console.log(childFreq);
-        console.log(childNext);
-        console.log(childMins);
+            // childData will be the actual contents of the child
+            var childData = childSnapshot.val();
+            trains.push(childData.name);
+            var childFirst = childData.firstTime;
+            var childFreq = childData.frequency;
+            var childMins = calcMins(childFirst, childFreq);
+            var childNext = moment(moment().add(childMins, "minutes")).format("HH:mm A");
+            var nextID = "#next" + childData.name;
+            var minsID = "#mins" + childData.name;
+            $(nextID).text(childNext);
+            $(minsID).text(childMins);
         });
     });
-}
+};
 
-updateTimes();
+initialize();
