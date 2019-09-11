@@ -18,10 +18,12 @@ var freq = "";
 var next = "";
 var mins = 0;
 var trains = [];
+var interval;
 
 $("#add-train").on("click", function() {
     event.preventDefault();
 
+    // Capture input values
     name = $("#name-input").val().trim();
     dest = $("#dest-input").val().trim();
     first = $("#time-input").val().trim();
@@ -31,7 +33,7 @@ $("#add-train").on("click", function() {
     mins = calcMins(first, freq);
 
     // Calculate next train arrival time
-    next = moment(moment().add(mins, "minutes")).format("HH:mm A");
+    next = moment(moment().add(mins, "minutes")).format("hh:mm A");
     
     // Check if this train name has already been used
     if (checkName(name)) {
@@ -112,7 +114,7 @@ function calcMins(start, freq) {
 };
 
 // Function to update the next arrival and minutes remaining for all trains in the database and initialize train names array
-// (Called whenever page loads)
+// (Called whenever page loads and every 1 second with the interval)
 function initialize() {
     var query = firebase.database().ref().orderByKey();
     query.once("value")
@@ -120,16 +122,21 @@ function initialize() {
         snapshot.forEach(function(childSnapshot) {
             // childData will be the actual contents of the child
             var childData = childSnapshot.val();
+
             // Store train name of current child and remove all spaces
             var childName = childData.name.replace(/\s+/g, '');
+
             // Store this simplified name into the names array
             trains.push(childName);
+
             var childFirst = childData.firstTime;
             var childFreq = childData.frequency;
             var childMins = calcMins(childFirst, childFreq);
-            var childNext = moment(moment().add(childMins, "minutes")).format("HH:mm A");
+            var childNext = moment(moment().add(childMins, "minutes")).format("hh:mm A");
+
             var nextID = "#next" + childName;
             var minsID = "#mins" + childName;
+            
             // Update the current display to show next arrival time and minutes remaining for current train
             $(nextID).text(childNext);
             $(minsID).text(childMins);
@@ -138,3 +145,4 @@ function initialize() {
 };
 
 initialize();
+interval = setInterval(initialize, 1000);
