@@ -6,6 +6,7 @@ h1, h6 {
 
 body {
     font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono", "lucida console";
+    background-color: lightgrey;
 }
 
 #headbox {
@@ -32,8 +33,13 @@ body {
     font-weight: bold;
 }
 
-.whitebox {
-    background-color: white;
+.greybox {
+    background-color: lightgrey;
+}
+
+input[type="text"] {
+    background-color: lightgrey;
+    border: solid grey;
 }
 
 form {
@@ -44,7 +50,7 @@ form {
     border-bottom-width: 16px;
 }
 
-#formwhite {
+#formpad {
     padding-bottom: 18px;
 }
 

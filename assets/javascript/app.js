@@ -12,6 +12,7 @@ firebase.initializeApp(config);
 
 // Initial Values
 var name = "";
+var simple = "";
 var dest = "";
 var first = "";
 var freq = "";
@@ -25,6 +26,7 @@ $("#add-train").on("click", function() {
 
     // Capture input values
     name = $("#name-input").val().trim();
+    simple = name.replace(/\s+/g, '');
     dest = $("#dest-input").val().trim();
     first = $("#time-input").val().trim();
     freq = $("#freq-input").val().trim();
@@ -41,6 +43,7 @@ $("#add-train").on("click", function() {
         if ((name!="")&&(dest!="")&&(first!="")&&(freq!="")&&(moment(first, 'HH:mm', true).isValid())) {
             database.ref().push({
                 name: name,
+                simpleName: simple,
                 destination: dest,
                 firstTime: first,
                 frequency: freq,
@@ -69,23 +72,69 @@ database.ref().on("child_added", function(snapshot) {
     tableNext.attr("id", "next" + sv.name.replace(/\s+/g, ''));
     var tableMins = $("<td>");
     tableMins.attr("id", "mins" + sv.name.replace(/\s+/g, ''));
+    var tableUpdate = $("<button>");
+    tableUpdate.addClass("update-button");
+    tableUpdate.attr("value", sv.name.replace(/\s+/g, ''));
+    var tableUpSpot = $("<td>");
+    tableUpSpot.attr("style", "white-space: nowrap; text-align: center");
+    tableUpSpot.append(tableUpdate);
+    tableUpSpot.attr("style", "text-align: center");
+    var tableRemove = $("<button>");
+    tableRemove.addClass("remove-button");
+    tableRemove.attr("value", sv.name.replace(/\s+/g, ''));
+    var tableReSpot = $("<td>");
+    tableReSpot.attr("style", "white-space: nowrap; text-align: center");
+    tableReSpot.append(tableRemove);
     
     tableName.text(sv.name);
     tableDest.text(sv.destination);
     tableFreq.text(sv.frequency);
     tableNext.text(sv.nextArrival);
     tableMins.text(sv.minsAway);
+    tableUpdate.text("✔");
+    tableRemove.text("X");
 
     tableItem.append(tableName);
     tableItem.append(tableDest);
     tableItem.append(tableFreq);
     tableItem.append(tableNext);
     tableItem.append(tableMins);
+    // tableItem.append(tableUpSpot);
+    tableItem.append(tableReSpot);
+
+    var simp = sv.simpleName;
+    tableItem.attr("id", "tr-" + simp);
 
     $("#table-body").append(tableItem);
 
 }, function(errorObject) {
     console.log("Errors handled: " + errorObject.code);
+});
+
+$(document).on("click", ".remove-button", function() {
+    var thisID = $(this).attr("value");
+
+    // Find the child in firebase database that matches the ID of remove button pressed, and remove it
+    var db = firebase.database();
+    var ref = db.ref();
+    ref.once("value")
+        .then(function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+            var pkey = childSnapshot.key;
+            var chval = childSnapshot.val();
+            if(chval.simpleName == thisID) {
+                ref.child(pkey).remove();
+            }
+        });
+    });
+
+    // Remove this train from the names array
+    var index = trains.indexOf(thisID);
+    trains.splice(index, 1);
+
+    // Empty out that data table entry for that ID
+    var tabID = "#tr-" + thisID;
+    $(tabID).empty();
 });
 
 // Function to check if a train name is already stored in the database
@@ -116,6 +165,7 @@ function calcMins(start, freq) {
 // Function to update the next arrival and minutes remaining for all trains in the database and initialize train names array
 // (Called whenever page loads and every 1 second with the interval)
 function initialize() {
+    trains = [];
     var query = firebase.database().ref().orderByKey();
     query.once("value")
     .then(function(snapshot) {
@@ -136,7 +186,7 @@ function initialize() {
 
             var nextID = "#next" + childName;
             var minsID = "#mins" + childName;
-            
+
             // Update the current display to show next arrival time and minutes remaining for current train
             $(nextID).text(childNext);
             $(minsID).text(childMins);
