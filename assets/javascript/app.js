@@ -42,8 +42,6 @@ $("#add-train").on("click", function() {
                 destination: dest,
                 firstTime: first,
                 frequency: freq,
-                nextArrival: next,
-                minsAway: mins,
                 dateAdded: firebase.database.ServerValue.TIMESTAMP
             });
         }
@@ -66,9 +64,9 @@ database.ref().on("child_added", function(snapshot) {
     var tableDest = $("<td>");
     var tableFreq = $("<td>");
     var tableNext = $("<td>");
-    tableNext.attr("id", "next" + sv.name);
+    tableNext.attr("id", "next" + sv.name.replace(/\s+/g, ''));
     var tableMins = $("<td>");
-    tableMins.attr("id", "mins" + sv.name);
+    tableMins.attr("id", "mins" + sv.name.replace(/\s+/g, ''));
     
     tableName.text(sv.name);
     tableDest.text(sv.destination);
@@ -122,13 +120,17 @@ function initialize() {
         snapshot.forEach(function(childSnapshot) {
             // childData will be the actual contents of the child
             var childData = childSnapshot.val();
-            trains.push(childData.name);
+            // Store train name of current child and remove all spaces
+            var childName = childData.name.replace(/\s+/g, '');
+            // Store this simplified name into the names array
+            trains.push(childName);
             var childFirst = childData.firstTime;
             var childFreq = childData.frequency;
             var childMins = calcMins(childFirst, childFreq);
             var childNext = moment(moment().add(childMins, "minutes")).format("HH:mm A");
-            var nextID = "#next" + childData.name;
-            var minsID = "#mins" + childData.name;
+            var nextID = "#next" + childName;
+            var minsID = "#mins" + childName;
+            // Update the current display to show next arrival time and minutes remaining for current train
             $(nextID).text(childNext);
             $(minsID).text(childMins);
         });
