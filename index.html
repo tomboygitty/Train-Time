@@ -14,20 +14,19 @@
 </head>
 
 <body>
-  <header class="row">
-    <div class="col-2"></div>
+  <header class="row justify-content-center">
     <div id="headbox" class="col-8">
       <h1>Come On, Ride the Train</h1>
       <h6>Hey, Ride It</h6>
     </div>
   </header><br><br>
   
-  <div class="row">
-    <div class="col-2"></div>
+  <div class="row justify-content-center">
     <div class="col-8 bluebox">
         <p id="sched-title">Current Train Schedule</p>
-      <table id="table-body" class="table table-sm">
-          <thead>
+        <div class="whitebox">
+          <table id="table-body" class="table table-sm">
+            <thead>
               <tr>
                   <th>Train Name</th>
                   <th>Destination</th>
@@ -35,31 +34,31 @@
                   <th>Next Arrival</th>
                   <th>Minutes Away</th>
               </tr>
-          </thead>
-        </table>
+            </thead>
+          </table>
+        </div>
     </div>
   </div><br>
 
-  <div class="row">
-      <div class="col-2"></div>
-      <div class="col-8 bluebox">
+  <div class="row justify-content-center">
+      <div id="formbox" class="col-8 bluebox">
           <p id="sched-title">Add Train</p>
-          <form role="form">
+          <form id="formwhite" class="whitebox" role="form">
               <div class="form-group row">
                 <label for="name-input">Train Name</label>
-                <input class="form-control" id="name-input" type="text" required>
+                <input class="form-control" id="name-input" type="text">
               </div>
               <div class="form-group row">
                 <label for="email-input">Destination</label>
-                <input class="form-control" id="dest-input" type="text" required>
+                <input class="form-control" id="dest-input" type="text">
               </div>
               <div class="form-group row">
                 <label for="age-input">First Train Time (HH:mm - military time)</label>
-                <input class="form-control" id="time-input" type="text" required>
+                <input class="form-control" id="time-input" type="text">
               </div>
               <div class="form-group row">
                 <label for="comment-input">Frequency (min)</label>
-                <input class="form-control" id="freq-input" type="text" required>
+                <input class="form-control" id="freq-input" type="text">
               </div>
               <button class="btn btn-default" id="add-train" type="submit">Submit</button>
             </form>

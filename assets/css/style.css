@@ -16,20 +16,36 @@ body {
 }
 
 .bluebox {
+    align-content: center;
     border-style: solid;
     border-width: 2px;
     border-color: #357AB6;
+    background-color: #357AB6;
     border-radius: 5px;
 }
 
 #sched-title {
     background-color: #357AB6;
     color: white;
-    width: 100%;
+    width: auto;
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+.whitebox {
+    background-color: white;
 }
 
 form {
-    padding: 0 20px 0 20px;
+    padding: 10px 40px 0 40px;
+}
+
+#formbox {
+    border-bottom-width: 16px;
+}
+
+#formwhite {
+    padding-bottom: 18px;
 }
 
 button {
